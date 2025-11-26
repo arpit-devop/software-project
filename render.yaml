@@ -1,0 +1,35 @@
+# Render.com deployment configuration for Pharmaventory
+
+services:
+  - type: web
+    name: pharmaventory-backend
+    env: node
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: CORS_ORIGIN
+        value: https://pharmaventory-frontend.onrender.com
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_HTTP_REFERER
+        value: https://pharmaventory-frontend.onrender.com
+
+  - type: web
+    name: pharmaventory-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://pharmaventory-backend.onrender.com/api
+
